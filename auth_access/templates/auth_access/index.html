@@ -7,6 +7,11 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>foi</h1>
+    <h1>Github monitor</h1>
+    <form action="/auth/redirect" method="post">
+        {% csrf_token %}
+        <input type="text" name="username" id="username">
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
