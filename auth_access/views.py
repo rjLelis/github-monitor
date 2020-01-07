@@ -7,7 +7,7 @@ from github import Github
 
 def index(request):
     if 'access_token' in request.session:
-        return redirect('frondend:index')
+        return redirect('frontend:index')
     return render(request, 'auth_access/index.html')
 
 
@@ -21,12 +21,12 @@ def get_token(request):
 
     headers = {
         'Accept': 'application/json',
-        'Content-type': 'application/json'
+        'Content-Type': 'application/json'
     }
 
     access = requests.post(
         'https://github.com/login/oauth/access_token',
-        data=payload,
+        json=payload,
         headers=headers
     ).json()
     access_token = access.get('access_token')
@@ -48,13 +48,13 @@ def get_token(request):
 
 
 def redirect_access(request):
-    username = request.GET.get('username')
-    found_profile, profile = get_profile(username)
+    username = request.POST.get('username')
+    found_profile, profile = get_profile(username=username)
 
     if found_profile:
         request.session['access_token'] = profile.access_token
         request.session['username'] = profile.username
-        return redirect('frontend:index', request)
+        return redirect('frontend:index')
 
     client_id = config('CLIENT_ID')
     auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
