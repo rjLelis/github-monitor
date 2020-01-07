@@ -2,6 +2,7 @@ import requests
 from decouple import config
 from django.shortcuts import redirect, render
 from monitor.helpers import create_profile, get_profile
+from .helpers import login
 from github import Github
 
 
@@ -41,8 +42,7 @@ def get_token(request):
       access_token=access_token
     )
 
-    request.session['access_token'] = access_token
-    request.session['username'] = profile.username
+    execute_login(request, access_token, profile.username)
 
     return redirect('frontend:index')
 
@@ -52,8 +52,7 @@ def redirect_access(request):
     found_profile, profile = get_profile(username=username)
 
     if found_profile:
-        request.session['access_token'] = profile.access_token
-        request.session['username'] = profile.username
+        execute_login(request, profile.access_token, profile.username)
         return redirect('frontend:index')
 
     client_id = config('CLIENT_ID')

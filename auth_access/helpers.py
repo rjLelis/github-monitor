@@ -4,6 +4,11 @@ from rest_framework.authentication import BaseAuthentication
 from monitor.models import Profile
 
 
+def execute_login(request, access_token, username):
+    request.session['access_token'] = access_token
+    request.session['username'] = username
+
+
 def login_required(function):
     def wrapper(request, **kwargs):
         if 'access_token' not in request.session:
