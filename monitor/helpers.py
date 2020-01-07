@@ -12,3 +12,5 @@ def get_profile(**login_or_token):
         return (True, profile)
     except Profile.DoesNotExist:
         return (False, None)
+    except Exception as e:
+        raise e
