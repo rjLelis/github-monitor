@@ -1,8 +1,14 @@
 import requests
 from decouple import config
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from monitor.helpers import create_profile, get_profile
 from github import Github
+
+
+def index(request):
+    if 'access_token' in request.session:
+        return redirect('frondend:index')
+    return render(request, 'auth_access/index.html')
 
 
 def get_token(request):
@@ -38,10 +44,10 @@ def get_token(request):
     request.session['access_token'] = access_token
     request.session['username'] = profile.username
 
-    return redirect('frontend:index', request)
+    return redirect('frontend:index')
 
 
-def redirect(request):
+def redirect_access(request):
     username = request.GET.get('username')
     found_profile, profile = get_profile(username)
 
@@ -53,4 +59,4 @@ def redirect(request):
     client_id = config('CLIENT_ID')
     auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
 
-    return redirect(auth_url, request)
+    return redirect(auth_url)
