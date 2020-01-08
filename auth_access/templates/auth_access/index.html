@@ -8,7 +8,14 @@
 </head>
 <body>
     <h1>Github monitor</h1>
-    <form action="/auth/redirect" method="post">
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form action="{% url 'auth:redirect' %}" method="post">
         {% csrf_token %}
         <input type="text" name="username" id="username">
         <button type="submit">Submit</button>

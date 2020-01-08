@@ -6,5 +6,6 @@ app_name = 'auth'
 urlpatterns = [
     path('', views.index, name='index'),
     path('token', views.get_token, name='get-token'),
-    path('redirect', views.redirect_access, name='redirect')
+    path('redirect', views.redirect_access, name='redirect'),
+    path('logout', views.logout, name='logout')
 ]

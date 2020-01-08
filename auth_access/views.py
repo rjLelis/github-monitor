@@ -1,17 +1,22 @@
 import requests
 from decouple import config
 from django.shortcuts import redirect, render
-from monitor.helpers import create_profile, get_profile
-from .helpers import login
+from monitor import helpers as monitor_helpers
+from . import helpers as auth_helpers
 from github import Github
 
 
+@auth_helpers.logout_required
 def index(request):
-    if 'access_token' in request.session:
-        return redirect('frontend:index')
     return render(request, 'auth_access/index.html')
 
 
+@auth_helpers.login_required
+def logout(request):
+    return auth_helpers.execute_logout(request)
+
+
+@auth_helpers.logout_required
 def get_token(request):
     # Todo: Create validations in case code and access_token return empty
     payload = {
@@ -35,23 +40,24 @@ def get_token(request):
     g = Github(access_token)
     user = g.get_user()
 
-    created, profile = create_profile(
+    profile, _ = monitor_helpers.create_profile(
       username=user.login,
       name=user.name,
       email=user.email,
       access_token=access_token
     )
 
-    execute_login(request, access_token, profile.username)
+    execute_login(request, profile.username)
 
     return redirect('frontend:index')
 
 
+@auth_helpers.logout_required
 def redirect_access(request):
     username = request.POST.get('username')
-    found_profile, profile = get_profile(username=username)
+    profile, found = monitor_helpers.get_profile(username=username)
 
-    if found_profile:
+    if found:
         execute_login(request, profile.access_token, profile.username)
         return redirect('frontend:index')
 
