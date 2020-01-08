@@ -1,17 +1,34 @@
 from django.shortcuts import redirect
 from django.contrib.auth import mixins
+from django.contrib import messages
 from rest_framework.authentication import BaseAuthentication
-from monitor.models import Profile
+from monitor import helpers as monitor_helpers
 
 
-def execute_login(request, access_token, username):
-    request.session['access_token'] = access_token
+def execute_login(request, username):
     request.session['username'] = username
+
+
+def execute_logout(request):
+    try:
+        del request.session['username']
+        messages.success(request, 'You have been logged out')
+        return redirect('auth:index')
+    except KeyError:
+        pass
+
+
+def logout_required(function):
+    def wrapper(request, **kwargs):
+        if 'username' in request.session:
+            return redirect('frontend:index')
+        return function(request, **kwargs)
+    return wrapper
 
 
 def login_required(function):
     def wrapper(request, **kwargs):
-        if 'access_token' not in request.session:
+        if 'username' not in request.session:
             return redirect('auth:index')
         return function(request, **kwargs)
     return wrapper
@@ -20,12 +37,12 @@ def login_required(function):
 class GithubAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
-        if 'access_token' not in request.session:
+        if 'username' not in request.session:
             return None
 
-        acces_token = request.session.get('access_token')
-        try:
-            profile = Profile.objects.get(acces_token=acces_token)
-            return (profile, None)
-        except Profile.DoesNotExist:
+        username = request.session.get('username')
+        profile, found = monitor_helpers.get_profile(username=username)
+        if not found:
             return None
+
+        return (profile, None)
