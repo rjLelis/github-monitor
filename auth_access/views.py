@@ -47,7 +47,7 @@ def get_token(request):
       access_token=access_token
     )
 
-    execute_login(request, profile.username)
+    auth_helpers.execute_login(request, profile.username)
 
     return redirect('frontend:index')
 
@@ -58,7 +58,7 @@ def redirect_access(request):
     profile, found = monitor_helpers.get_profile(username=username)
 
     if found:
-        execute_login(request, profile.access_token, profile.username)
+        auth_helpers.execute_login(request, profile.username)
         return redirect('frontend:index')
 
     client_id = config('CLIENT_ID')
