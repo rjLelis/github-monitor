@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import mixins
 from django.contrib import messages
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 from monitor import helpers as monitor_helpers
 
 
@@ -38,11 +39,9 @@ class GithubAuthentication(BaseAuthentication):
 
     def authenticate(self, request):
         if 'username' not in request.session:
-            return None
+            raise AuthenticationFailed('user not logged in')
 
         username = request.session.get('username')
-        profile, found = monitor_helpers.get_profile(username=username)
-        if not found:
-            return None
+        profile, _ = monitor_helpers.get_profile(username=username)
 
         return (profile, None)
