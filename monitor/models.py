@@ -16,7 +16,7 @@ class Repository(models.Model):
     owner = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
-        related_name='owner'
+        related_name='repositories'
     )
 
     def __str__(self):
@@ -29,14 +29,14 @@ class Commit(models.Model):
         Profile,
         null=True,
         on_delete=models.SET_NULL,
-        related_name='commiter'
+        related_name='commits'
     )
     commited_at = models.DateTimeField()
     message = models.TextField()
     repository = models.ForeignKey(
         Repository,
         on_delete=models.CASCADE,
-        related_name='repository'
+        related_name='commits'
     )
 
     def __str__(self):
