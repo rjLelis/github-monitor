@@ -57,7 +57,6 @@ def redirect_access(request):
     username = request.POST.get('username')
     try:
         profile, status_code = monitor_helpers.get_profile(username=username)
-        breakpoint()
 
         if profile.access_token:
             auth_helpers.execute_login(request, profile.username)

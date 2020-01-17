@@ -5,7 +5,6 @@ from .models import Commit, Profile, Repository
 
 
 class RepositorySerializer(serializers.ModelSerializer):
-    username = serializers.CharField(write_only=True)
     repository = serializers.CharField(write_only=True)
 
     class Meta:
@@ -14,7 +13,6 @@ class RepositorySerializer(serializers.ModelSerializer):
             'id',
             'name',
             'description',
-            'username',
             'repository',
             'full_name'
         )
@@ -25,7 +23,7 @@ class RepositorySerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        username = validated_data.pop('username')
+        username = self.context.get('username')
         repository_name = validated_data.pop('repository')
         try:
             profile, _ = monitor_helpers.get_profile(username=username)
@@ -36,11 +34,9 @@ class RepositorySerializer(serializers.ModelSerializer):
 
         except Exception as e:
             message, status_code = e.args
-            error = {
-                'message': message,
-                'status_code': status_code
-            }
-            raise serializers.ValidationError(error)
+            validation_error = serializers.ValidationError(detail=message)
+            validation_error.status_code = status_code
+            raise validation_error
 
         return new_repository
 
