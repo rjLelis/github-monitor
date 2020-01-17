@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Profile(models.Model):
     username = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=100, null=True)
@@ -11,16 +12,24 @@ class Profile(models.Model):
 
 
 class Repository(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100, null=False)
     description = models.TextField(default='')
     owner = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
         related_name='repositories'
     )
+    full_name = models.CharField(
+        max_length=201,
+        unique=True,
+        default='-')
 
     def __str__(self):
-        return f'{self.owner.username}/{self.name}'
+        return self.full_name
+
+    def save(self, *args, **kwargs):
+        self.full_name = f'{self.owner.username}/{self.name}'
+        super(Repository, self).save(*args, **kwargs)
 
 
 class Commit(models.Model):
@@ -40,4 +49,4 @@ class Commit(models.Model):
     )
 
     def __str__(self):
-        return f'{self.message} {self.sha[:7]}'
+        return f'{self.message} {self.sha[:7]} <{self.repository.full_name}>'
