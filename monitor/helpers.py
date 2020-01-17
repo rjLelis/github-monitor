@@ -32,6 +32,11 @@ def get_profile(**login_or_token):
         raise Exception('User not found', status.HTTP_404_NOT_FOUND)
 
 
+def get_repositories_by_username(username):
+    repos = Repository.objects.filter(owner__username=username).all()
+    return repos
+
+
 def create_repository(profile, full_name_or_id):
     try:
         g = Github(profile.access_token)
