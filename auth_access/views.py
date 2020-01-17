@@ -41,10 +41,10 @@ def get_token(request):
     user = g.get_user()
 
     profile, _ = monitor_helpers.create_profile(
-      username=user.login,
-      name=user.name,
-      email=user.email,
-      access_token=access_token
+        username=user.login,
+        name=user.name,
+        email=user.email,
+        access_token=access_token
     )
 
     auth_helpers.execute_login(request, profile.username)
@@ -55,13 +55,20 @@ def get_token(request):
 @auth_helpers.logout_required
 def redirect_access(request):
     username = request.POST.get('username')
-    profile, found = monitor_helpers.get_profile(username=username)
+    try:
+        profile, status_code = monitor_helpers.get_profile(username=username)
+        breakpoint()
 
-    if found:
-        auth_helpers.execute_login(request, profile.username)
-        return redirect('frontend:index')
+        if profile.access_token:
+            auth_helpers.execute_login(request, profile.username)
+            return redirect('frontend:index')
 
-    client_id = config('CLIENT_ID')
-    auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
+        client_id = config('CLIENT_ID')
+        auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
+        return redirect(auth_url)
 
-    return redirect(auth_url)
+    except Exception:
+        client_id = config('CLIENT_ID')
+        auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
+
+        return redirect(auth_url)
