@@ -40,3 +40,33 @@ class RepositorySerializer(serializers.ModelSerializer):
 
         return new_repository
 
+
+class CommitSerializer(serializers.ModelSerializer):
+
+    author_username = serializers.CharField(
+        source='commiter.username',
+        read_only=True
+    )
+
+    author_email = serializers.CharField(
+        source='commiter.email',
+        read_only=True,
+    )
+
+    date = serializers.DateTimeField(
+        source='commited_at',
+        read_only=True
+    )
+    class Meta:
+        model = Commit
+        fields = (
+            'sha',
+            'author_username',
+            'author_email',
+            'date',
+            'message'
+        )
+        extra_kwargs = {
+            'sha': {'read_only': True},
+            'message': {'read_only': True}
+        }

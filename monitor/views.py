@@ -7,7 +7,7 @@ from auth_access import helpers as auth_helpers
 
 from . import helpers as monitor_helpers
 from .models import Repository
-from .serializers import RepositorySerializer
+from .serializers import RepositorySerializer, CommitSerializer
 
 
 class RepositoryListCreateView(generics.ListCreateAPIView):
@@ -19,7 +19,7 @@ class RepositoryListCreateView(generics.ListCreateAPIView):
         queryset = self.queryset
         if self.request.method == 'GET':
             username = self.request.session.get('username')
-            queryset = monitor_helpers.get_repositories_by_username(username)
+            queryset = monitor_helpers.get_repositories_by_user(username)
 
         return queryset
 
@@ -31,5 +31,13 @@ class RepositoryListCreateView(generics.ListCreateAPIView):
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+@api_view(['GET'])
+@auth_helpers.login_required
+def commits_by_repository(request, repo_name):
+    username = request.session.get('username')
+    repo_full_name = f'{username}/{repo_name}'
+    commits = monitor_helpers.get_commits_by_repo(repo_full_name)
+    serializer = CommitSerializer(commits, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
