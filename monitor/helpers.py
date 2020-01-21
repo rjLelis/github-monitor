@@ -16,7 +16,7 @@ def create_profile(**kwargs):
             profile.name = kwargs.get('name', profile.name)
             profile.email = kwargs.get('email', profile.email)
             profile.access_token = kwargs.get('access_token',
-                profile.access_token)
+                                              profile.access_token)
             profile.save()
 
         return profile, created
@@ -53,7 +53,7 @@ def create_repository(profile, full_name_or_id):
 
     except db_utils.IntegrityError:
         raise Exception('repo already on the list',
-            status.HTTP_400_BAD_REQUEST)
+                        status.HTTP_400_BAD_REQUEST)
     except UnknownObjectException:
         raise Exception('repo not found', status.HTTP_404_NOT_FOUND)
     except Exception as e:
@@ -85,7 +85,7 @@ def create_commits(github_repo, repo_object):
         Commit.objects.bulk_create(commit_list)
     except db_utils.IntegrityError:
         raise Exception('commit already on the list',
-            status.HTTP_400_BAD_REQUEST)
+                        status.HTTP_400_BAD_REQUEST)
 
 
 def get_commits_by_repo(repo_full_name):

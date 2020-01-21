@@ -1,5 +1,4 @@
 from django.shortcuts import redirect
-from django.contrib.auth import mixins
 from django.contrib import messages
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
@@ -47,4 +46,3 @@ class GithubAuthentication(BaseAuthentication):
             return profile, None
         except Exception:
             raise AuthenticationFailed('user not logged in')
-
