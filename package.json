@@ -1,0 +1,31 @@
+{
+  "name": "github_monitor",
+  "version": "1.0.0",
+  "description": "An app to monitor Github repositories and it's commits",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack --mode development ./frontend/src/index.js --output ./frontend/static/frontend/js/main.js --watch",
+    "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/frontend/js/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rjLelis/github-monitor.git"
+  },
+  "author": "rjLelis",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rjLelis/github-monitor/issues"
+  },
+  "homepage": "https://github.com/rjLelis/github-monitor#readme",
+  "dependencies": {
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  }
+}
