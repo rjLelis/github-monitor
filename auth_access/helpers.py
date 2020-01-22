@@ -1,5 +1,4 @@
 from django.shortcuts import redirect
-from django.contrib import messages
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from monitor import helpers as monitor_helpers
@@ -12,7 +11,6 @@ def execute_login(request, username):
 def execute_logout(request):
     try:
         del request.session['username']
-        messages.success(request, 'You have been logged out')
         return redirect('auth:index')
     except KeyError:
         pass
