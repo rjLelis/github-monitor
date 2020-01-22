@@ -1,6 +1,7 @@
 import requests
 from decouple import config
 from django.shortcuts import redirect, render
+from django.contrib import messages
 from monitor import helpers as monitor_helpers
 from . import helpers as auth_helpers
 from github import Github
@@ -55,19 +56,11 @@ def get_token(request):
 @auth_helpers.logout_required
 def redirect_access(request):
     username = request.POST.get('username')
-    try:
-        profile, status_code = monitor_helpers.get_profile(username=username)
 
-        if profile.access_token:
-            auth_helpers.execute_login(request, profile.username)
-            return redirect('frontend:index')
+    if not username:
+        messages.error(request, 'Enter your Github username', extra_tags='danger')
+        return redirect('auth:index')
 
-        client_id = config('CLIENT_ID')
-        auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
-        return redirect(auth_url)
-
-    except Exception:
-        client_id = config('CLIENT_ID')
-        auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
-
-        return redirect(auth_url)
+    client_id = config('CLIENT_ID')
+    auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
+    return redirect(auth_url)
