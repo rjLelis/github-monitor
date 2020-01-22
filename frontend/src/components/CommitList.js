@@ -1,6 +1,11 @@
 import React from 'react';
 
 class CommitList extends React.Component {
+
+    state = {
+        commits: [],
+    }
+
     mock() {
         const commits = [
         {
@@ -42,6 +47,14 @@ class CommitList extends React.Component {
         return commits;
     }
 
+    componentDidMount() {
+        const request = {
+            data: this.mock()
+        }
+        this.setState({ commit: request.data })
+
+    }
+
     getDateTimeFormat(date) {
         const commitDate = new Date(date);
         return Intl.DateTimeFormat('en-GB', {
@@ -54,6 +67,7 @@ class CommitList extends React.Component {
             timeZoneName: 'short'
         }).format(commitDate)
     }
+
     render(){
         const commits = this.mock();
         return (

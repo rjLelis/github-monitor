@@ -3,45 +3,56 @@ import React from 'react';
 class RepositoryList extends React.Component {
 
     state = {
+        repositories: [],
         activeId: null
     }
 
     mock() {
         return [
             {
-                'id': 1,
-                'name': 'blog_django',
-                'description': 'Código usado para aprender Django',
+                id: 1,
+                name: 'blog_django',
+                description: 'Código usado para aprender Django',
+                full_name: 'rjLelis/blog_django'
             },
             {
-                'id': 2,
-                'name': 'blog_django',
-                'description': 'Código usado para aprender Django',
+                id: 2,
+                name: 'blog_django',
+                description: 'Código usado para aprender Django',
+                full_name: 'rjLelis/blog_django'
             },
         ]
     }
 
-    handleClick(e, id) {
+    componentDidMount() {
+        const request = {
+            data: this.mock()
+        }
+        this.setState({repositories: request.data})
+    }
+
+    handleClick(e, id, full_name) {
         this.setState({activeId: id});
     }
 
     getActiveClass(repoId) {
         let className = "list-group-item list-group-item-action flex-column align-items-start repository";
-        if(this.state.activeId == repoId) {
+        if(this.state.activeId === repoId) {
             className += ' active';
         }
         return className;
     }
 
     render() {
-        const repositories = this.mock();
+        const { repositories } = this.state;
         return (
             <div className="list-group">
                 {repositories.map(repo => (
                     <a
-                    href="#"
-                    className={this.getActiveClass(repo.id)}
-                    onClick={this.handleClick.bind(this, repo.id)}
+                        key={repo.id}
+                        href="#"
+                        className={this.getActiveClass(repo.id)}
+                        onClick={(e) => this.handleClick(e, repo.id, repo.full_name)}
                     >
                         <div className="d-flex w-100 justify-content-between">
                             <h4 className="mb-1">{repo.name}</h4>
