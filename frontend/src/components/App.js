@@ -14,9 +14,6 @@ class App extends React.Component {
                 <main role="main" className="jumbotron">
                     <div className="row">
                         <div className="col-md-4">
-                            {/* <div className='repositories' style={{height: '100px'}}>
-                                guogdwugdogdowgdowgdowdgo
-                            </div> */}
                             <RepositoryList />
                         </div>
                         <div className="col-md-8">
