@@ -1,35 +1,16 @@
 import React from 'react';
+import EmptyListMessage from "./EmptyListMessage";
 
 class RepositoryList extends React.Component {
 
-    state = {
-        repositories: [],
-        activeId: null
-    }
 
-    mock() {
-        return [
-            {
-                id: 1,
-                name: 'blog_django',
-                description: 'Código usado para aprender Django',
-                full_name: 'rjLelis/blog_django'
-            },
-            {
-                id: 2,
-                name: 'blog_django',
-                description: 'Código usado para aprender Django',
-                full_name: 'rjLelis/blog_django'
-            },
-        ]
-    }
-
-    componentDidMount() {
-        const request = {
-            data: this.mock()
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeId: null
         }
-        this.setState({repositories: request.data})
     }
+
 
     handleClick(e, id, full_name) {
         this.setState({activeId: id});
@@ -44,23 +25,27 @@ class RepositoryList extends React.Component {
     }
 
     render() {
-        const { repositories } = this.state;
+        const { repositories } = this.props;
         return (
-            <div className="list-group">
-                {repositories.map(repo => (
-                    <a
-                        key={repo.id}
-                        href="#"
-                        className={this.getActiveClass(repo.id)}
-                        onClick={(e) => this.handleClick(e, repo.id, repo.full_name)}
-                    >
-                        <div className="d-flex w-100 justify-content-between">
-                            <h4 className="mb-1">{repo.name}</h4>
-                        </div>
-                        <p className="mb-1">{repo.description}</p>
-                    </a>
-                ))}
-            </div>
+            repositories.length > 1 ? (
+                <div className="list-group">
+                    {repositories.map(repo => (
+                        <a
+                            key={repo.id}
+                            href="#"
+                            className={this.getActiveClass(repo.id)}
+                            onClick={(e) => this.handleClick(e, repo.id, repo.full_name)}
+                        >
+                            <div className="d-flex w-100 justify-content-between">
+                                <h4 className="mb-1">{repo.name}</h4>
+                            </div>
+                            <p className="mb-1">{repo.description}</p>
+                        </a>
+                    ))}
+                </div>
+            ) : (
+                <EmptyListMessage message="No repositories to show" />
+            )
         )
     }
 }
