@@ -1,9 +1,24 @@
 {% extends 'frontend/base.html' %}
 {% block content %}
-    <h1>Github monitor</h1>
-    <form action="{% url 'auth:redirect' %}" method="post">
-        {% csrf_token %}
-        <input type="text" name="username" id="username">
-        <button type="submit">Submit</button>
-    </form>
+    <main>
+        <div class="jumbotron auth-login">
+            <form action="{% url 'auth:redirect' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <h1>Github monitor</h1>
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-dismissible alert-{{ message.tags }}">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    <label for="username">Github username</label>
+                    <input type="text" class="form-control" id="username" name="username">
+                  </div>
+                <button class="btn btn-primary auth-button" type="submit">Enter</button>
+            </form>
+        </div>
+    </main>
 {% endblock %}
