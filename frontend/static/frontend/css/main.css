@@ -28,3 +28,42 @@
     text-decoration: none;
 }
 
+.row .col-md-12 {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.row .col-md-12 form {
+    display: inline-block;
+}
+
+.repo-input {
+    min-width: 245px;
+}
+
+.bd-navbar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1071;
+}
+
+.bd-navbar .navbar-nav-svg {
+    display: inline-block;
+    width: 3rem;
+    height: 2rem;
+}
+
+.brand-icon {
+    display: flex;
+    align-items: center;
+}
+
+.auth-button {
+    width: 100%;
+}
+
+.auth-login {
+    width: 388px;
+    margin: 75px auto;
+}
