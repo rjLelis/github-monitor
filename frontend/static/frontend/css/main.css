@@ -1,0 +1,30 @@
+.repository.active {
+    background: linear-gradient(90deg, rgba(25,79,138,1) 7%, rgba(16,50,87,1) 100%);
+    color: #DFE7F0;
+}
+
+.repository:hover {
+    background-color: #444;
+    color:#fff;
+}
+
+.commit {
+    opacity: 0.8;
+    border-bottom: 3px solid rgba(0,0,0,0.125);
+}
+
+.flex-end {
+	justify-content: flex-end;
+}
+
+.email-link {
+    text-decoration: none;
+    color: #00bc8c;
+    background-color: transparent;
+}
+
+.email-link:hover {
+    color: #fff;
+    text-decoration: none;
+}
+

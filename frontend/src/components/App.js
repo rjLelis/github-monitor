@@ -1,11 +1,29 @@
 import React from "react";
+import Header from './Header';
+import RepositoryList from './RepositoryList';
+import CommitList from './CommitList';
 
 class App extends React.Component {
 
     render() {
         return (
             <div>
-                Funcionou com React
+                <header className="site-header">
+                    <Header />
+                </header>
+                <main role="main" className="jumbotron">
+                    <div className="row">
+                        <div className="col-md-4">
+                            {/* <div className='repositories' style={{height: '100px'}}>
+                                guogdwugdogdowgdowgdowdgo
+                            </div> */}
+                            <RepositoryList />
+                        </div>
+                        <div className="col-md-8">
+                            <CommitList />
+                        </div>
+                    </div>
+                </main>
             </div>
         )
     }

@@ -1,24 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'frontend/base.html' %}
+{% block content %}
     <h1>Github monitor</h1>
-    {% if messages %}
-        {% for message in messages %}
-            <div>
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
     <form action="{% url 'auth:redirect' %}" method="post">
         {% csrf_token %}
         <input type="text" name="username" id="username">
         <button type="submit">Submit</button>
     </form>
-</body>
-</html>
+{% endblock %}
