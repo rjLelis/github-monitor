@@ -9,11 +9,13 @@ class RepositoryList extends React.Component {
         this.state = {
             activeId: null
         }
+
+        this.handleClick = this.handleClick.bind(this);
     }
 
-
-    handleClick(e, id, full_name) {
+    handleClick(e, id, repoName) {
         this.setState({activeId: id});
+        this.props.onClick(repoName)
     }
 
     getActiveClass(repoId) {
@@ -34,7 +36,7 @@ class RepositoryList extends React.Component {
                             key={repo.id}
                             href="#"
                             className={this.getActiveClass(repo.id)}
-                            onClick={(e) => this.handleClick(e, repo.id, repo.full_name)}
+                            onClick={(e) => this.handleClick(e, repo.id, repo.name)}
                         >
                             <div className="d-flex w-100 justify-content-between">
                                 <h4 className="mb-1">{repo.name}</h4>

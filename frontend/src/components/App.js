@@ -1,4 +1,5 @@
 import React from "react";
+import axios from 'axios';
 import Header from './Header';
 import RepositoryList from './RepositoryList';
 import CommitList from './CommitList';
@@ -14,6 +15,19 @@ class App extends React.Component {
         };
     }
 
+    componentDidMount() {
+       axios.get('/api/repositories').then(response => {
+           return response.data;
+       }).then(data => this.setState({ repositories: data }));
+    }
+
+    handleClick(repoName) {
+        axios.get(`/api/repositories/${repoName}/commits`).then(response => {
+            return response.data;
+        }).then(data => this.setState({ commits: data} ));
+        console.log(this.state.commits)
+    }
+
     render() {
         const { commits, repositories } = this.state;
         return (
@@ -27,10 +41,13 @@ class App extends React.Component {
                             <RepositoryForm />
                         </div>
                         <div className="col-md-4">
-                            <RepositoryList repositories={repositories} />
+                            <RepositoryList
+                                repositories={repositories}
+                                onClick={(repoName) => this.handleClick(repoName)}
+                            />
                         </div>
                         <div className="col-md-8">
-                            <CommitList commits={commits}/>
+                            <CommitList commits={commits} />
                         </div>
                     </div>
                 </main>
