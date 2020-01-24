@@ -8,12 +8,13 @@ class RepositoryForm extends React.Component {
         super(props);
         this.state = {
             repository: "",
-            submitErrorMessage: ""
+            message: "",
+            messageType: ""
         }
     }
 
     handleClick(e) {
-        return this.setState({ submitErrorMessage: ""});
+        return this.setState({ message: ""});
     }
 
     handleSubmit(e) {
@@ -22,17 +23,25 @@ class RepositoryForm extends React.Component {
         if(repository.trim() === '') {
             return this.setState(() => {
                 return {
-                    submitErrorMessage: 'Enter the name of a repository'
+                    message: 'Enter the name of a repository',
+                    messageType: 'danger'
                 }
             });
         }
         axios.post('/api/repositories', {
             repository
         }).then(response => {
-            this.props.handleSubmit()
+            const message = `${repository} is now monitored`
+            this.setState({
+                repository: "",
+                message: message,
+                messageType:'success'
+            });
+            this.props.onSubmit()
         }).catch(error => {
             return this.setState({
-                submitErrorMessage: error.response.data
+                message: error.response.data,
+                messageType: 'danger'
             });
         })
     }
@@ -42,13 +51,13 @@ class RepositoryForm extends React.Component {
     }
 
     render() {
-        const { repository, submitErrorMessage } = this.state;
+        const { repository, message, messageType } = this.state;
         return (
             <form className="form-inline">
                 <FlashMessage
                     handleClick={(e) => this.handleClick(e)}
-                    message={submitErrorMessage}
-                    messageType="danger"
+                    message={message}
+                    messageType={messageType}
                 />
                 <input
                     className="form-control mr-sm-2 repo-input"
