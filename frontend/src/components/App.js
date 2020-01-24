@@ -24,8 +24,13 @@ class App extends React.Component {
     handleClick(repoName) {
         axios.get(`/api/repositories/${repoName}/commits`).then(response => {
             return response.data;
-        }).then(data => this.setState({ commits: data} ));
-        console.log(this.state.commits)
+        }).then(data => this.setState({ commits: data.results }));
+    }
+
+    handleSubmit() {
+        axios.get('/api/repositories').then(response => {
+            return response.data;
+        }).then(data => this.setState({ repositories: data }));
     }
 
     render() {
@@ -38,7 +43,9 @@ class App extends React.Component {
                 <main role="main" className="jumbotron">
                     <div className="row">
                         <div className='col-md-12'>
-                            <RepositoryForm />
+                            <RepositoryForm
+                                onSubmit={() => this.handleSubmit()}
+                            />
                         </div>
                         <div className="col-md-4">
                             <RepositoryList
