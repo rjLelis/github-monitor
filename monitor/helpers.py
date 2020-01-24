@@ -91,6 +91,6 @@ def create_commits(github_repo, repo_object):
 def get_commits_by_repo(repo_full_name):
     commits = Commit.objects.filter(
         repository__full_name=repo_full_name
-    ).all()
+    ).all().order_by('-commited_at')
 
     return commits

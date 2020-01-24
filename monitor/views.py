@@ -11,7 +11,7 @@ from .serializers import CommitSerializer, RepositorySerializer
 
 
 class RepositoryListCreateView(generics.ListCreateAPIView):
-    queryset = Repository.objects.all()
+    queryset = Repository.objects.all().order_by('-created_at')
     serializer_class = RepositorySerializer
     authentication_classes = (auth_helpers.GithubAuthentication, )
 
