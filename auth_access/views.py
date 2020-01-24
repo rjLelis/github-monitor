@@ -62,5 +62,16 @@ def redirect_access(request):
         return redirect('auth:index')
 
     client_id = config('CLIENT_ID')
-    auth_url = f'https://github.com/login/oauth/authorize?client_id={client_id}&login={username}'
+
+    client_id = f'client_id={client_id}'
+    login = f'login={username}'
+    params = [
+        client_id,
+        login
+    ]
+
+    auth_url = f'https://github.com/login/oauth/authorize?'
+    for param in params:
+        auth_url += f'&{param}'
+
     return redirect(auth_url)
