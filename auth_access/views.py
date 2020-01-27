@@ -36,6 +36,7 @@ def get_token(request):
         json=payload,
         headers=headers
     ).json()
+    print(access)
     access_token = access.get('access_token')
 
     g = Github(access_token)
@@ -65,9 +66,11 @@ def redirect_access(request):
 
     client_id = f'client_id={client_id}'
     login = f'login={username}'
+    scopes = 'scope=write:repo_hook,repo'
     params = [
         client_id,
-        login
+        login,
+        scopes
     ]
 
     auth_url = f'https://github.com/login/oauth/authorize?'
