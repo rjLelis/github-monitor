@@ -51,3 +51,7 @@ def commits_by_repository(request, repo_name):
     result_page = paginator.paginate_queryset(commits, request)
     serializer = CommitSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
+
+
+def push_event(request):
+    pass
