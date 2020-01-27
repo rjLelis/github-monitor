@@ -48,6 +48,7 @@ def create_repository(profile, full_name_or_id):
         )
 
         create_commits(repo, new_repository)
+        create_hook(repo)
 
         return new_repository
 
@@ -94,3 +95,14 @@ def get_commits_by_repo(repo_full_name):
     ).all().order_by('-commited_at')
 
     return commits
+
+
+def create_hook(repo):
+    # Todo: Adicionar reverse na config['url']
+    # Todo: Adicionar try..except para tratar o retorno
+    config = {
+        'url': 'http://localhost:8000/api/repositories',
+        'content_type': 'json'
+    }
+    events = ['push']
+    repo.create_hook('monitor', config, envents, active=True)
