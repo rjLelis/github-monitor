@@ -36,7 +36,6 @@ def get_token(request):
         json=payload,
         headers=headers
     ).json()
-    print(access)
     access_token = access.get('access_token')
 
     g = Github(access_token)
