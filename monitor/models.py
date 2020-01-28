@@ -14,7 +14,7 @@ class Profile(models.Model):
 
 class Repository(models.Model):
     name = models.CharField(max_length=100, null=False)
-    description = models.TextField(default='')
+    description = models.TextField(default='', null=True)
     owner = models.ForeignKey(
         Profile,
         on_delete=models.CASCADE,
@@ -25,6 +25,7 @@ class Repository(models.Model):
         unique=True,
         default='-')
     created_at = models.DateTimeField(default=timezone.now)
+    hook_id = models.IntegerField(default=0, null=True)
 
     def __str__(self):
         return self.full_name
@@ -32,7 +33,6 @@ class Repository(models.Model):
     def save(self, *args, **kwargs):
         self.full_name = f'{self.owner.username}/{self.name}'
         super(Repository, self).save(*args, **kwargs)
-
 
 class Commit(models.Model):
     sha = models.CharField(max_length=40, unique=True)
