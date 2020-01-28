@@ -1,11 +1,10 @@
 from django.db import utils as db_utils
 from django.urls import reverse
 from github import Github
-from github.GithubException import UnknownObjectException
-
+from github.GithubException import GithubException, UnknownObjectException
 from rest_framework import status
 
-from .models import Profile, Repository, Commit
+from .models import Commit, Profile, Repository
 
 
 def create_profile(**new_profile):
@@ -42,14 +41,15 @@ def create_repository(profile, full_name_or_id):
     try:
         g = Github(profile.access_token)
         repo = g.get_repo(full_name_or_id=full_name_or_id)
+        hook_id = create_hook(repo)
         new_repository = Repository.objects.create(
             name=repo.name,
             description=repo.description,
             owner=profile,
+            hook_id=hook_id
         )
 
         create_commits_by_repo(repo, new_repository)
-        create_hook(repo)
 
         return new_repository
 
@@ -59,8 +59,7 @@ def create_repository(profile, full_name_or_id):
     except UnknownObjectException:
         raise Exception('repo not found', status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        message, status_code = e.args
-        raise Exception(message, status_code)
+        raise e.args
 
 
 def create_commits_by_repo(github_repo, repo_object):
@@ -100,20 +99,23 @@ def get_commits_by_repo(repo_full_name):
 
 
 def create_hook(repo):
-    # Todo: Adicionar reverse na config['url']
-    # Todo: Adicionar try..except para tratar o retorno
-    base_url = 'https://github-monitor-app'
+    base_url = 'https://github-monitor-app.herokuapp.com'
     hook_url = reverse('monitor:push-event')
     config = {
         'url': f'{base_url}{hook_url}',
         'content_type': 'json'
     }
     events = ['push']
-    repo.create_hook('monitor', config, events, active=True)
+    try:
+        hook = repo.create_hook('web', config, events, active=True)
+        return hook.id
+    except GithubException as e:
+        return None
 
 
 def create_commits(*commits):
     try:
         Commits.objects.bulk_create(commits)
-    except Exception as e:
-        raise e
+    except db_utils.IntegrityError as e:
+        raise Exception('commit already on the list',
+            status.HTTP_400_BAD_REQUEST)
