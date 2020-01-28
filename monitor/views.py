@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 from auth_access import helpers as auth_helpers
 
@@ -55,7 +56,7 @@ def commits_by_repository(request, repo_name):
 
 @csrf_exempt
 def push_event(request):
-    for key, value in request.data:
+    for key, value in request.POST:
         print(f'{key} => {value}')
     # commits_pushed = request.data.pop('commits')
     # commits = []
@@ -65,4 +66,5 @@ def push_event(request):
     #     author_name = commit.get('')
     #     commiter = Profile()
     #     commit_object = Commit()
+    return HttpResponse('return')
 
