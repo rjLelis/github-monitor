@@ -59,7 +59,8 @@ def create_repository(profile, full_name_or_id):
     except UnknownObjectException:
         raise Exception('repo not found', status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        raise e.args
+        message, status_code = e.args
+        raise Exception(message, status_code)
 
 
 def create_commits_by_repo(github_repo, repo_object):
@@ -108,7 +109,7 @@ def create_hook(repo):
         'content_type': 'json'
     }
     events = ['push']
-    repo.create_hook('monitor', config, envents, active=True)
+    repo.create_hook('monitor', config, events, active=True)
 
 
 def create_commits(*commits):
