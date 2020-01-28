@@ -1,4 +1,5 @@
 from django.db import utils as db_utils
+from django.urls import reverse
 from github import Github
 from github.GithubException import UnknownObjectException
 
@@ -7,15 +8,15 @@ from rest_framework import status
 from .models import Profile, Repository, Commit
 
 
-def create_profile(**kwargs):
+def create_profile(**profile):
     try:
-        username = kwargs.pop('username')
+        username = profile.pop('username')
         profile, created = Profile.objects.get_or_create(
-            username=username, defaults=kwargs)
+            username=username, defaults=profile)
         if not created:
-            profile.name = kwargs.get('name', profile.name)
-            profile.email = kwargs.get('email', profile.email)
-            profile.access_token = kwargs.get('access_token',
+            profile.name = profile.get('name', profile.name)
+            profile.email = profile.get('email', profile.email)
+            profile.access_token = profile.get('access_token',
                                               profile.access_token)
             profile.save()
 
@@ -47,7 +48,7 @@ def create_repository(profile, full_name_or_id):
             owner=profile,
         )
 
-        create_commits(repo, new_repository)
+        create_commits_by_repo(repo, new_repository)
         create_hook(repo)
 
         return new_repository
@@ -61,7 +62,7 @@ def create_repository(profile, full_name_or_id):
         raise e.args
 
 
-def create_commits(github_repo, repo_object):
+def create_commits_by_repo(github_repo, repo_object):
     # Todo: add query to get commits only from the last month
     try:
         commits = github_repo.get_commits()
@@ -100,9 +101,18 @@ def get_commits_by_repo(repo_full_name):
 def create_hook(repo):
     # Todo: Adicionar reverse na config['url']
     # Todo: Adicionar try..except para tratar o retorno
+    base_url = 'https://github-monitor-app'
+    hook_url = reverse('monitor:push-event')
     config = {
-        'url': 'http://localhost:8000/api/repositories',
+        'url': f'{base_url}{hook_url}',
         'content_type': 'json'
     }
     events = ['push']
     repo.create_hook('monitor', config, envents, active=True)
+
+
+def create_commits(*commits):
+    try:
+        Commits.objects.bulk_create(commits)
+    except Exception as e:
+        raise e

@@ -54,4 +54,13 @@ def commits_by_repository(request, repo_name):
 
 
 def push_event(request):
-    pass
+    print(request.data)
+    # commits_pushed = request.data.pop('commits')
+    # commits = []
+    # for commit in commits_pushed:
+    #     sha = commit.get('sha')
+    #     message = commit.get('message')
+    #     author_name = commit.get('')
+    #     commiter = Profile()
+    #     commit_object = Commit()
+

@@ -24,7 +24,7 @@ class Repository(models.Model):
         max_length=201,
         unique=True,
         default='-')
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.full_name
