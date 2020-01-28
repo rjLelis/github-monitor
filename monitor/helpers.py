@@ -8,15 +8,15 @@ from rest_framework import status
 from .models import Profile, Repository, Commit
 
 
-def create_profile(**profile):
+def create_profile(**new_profile):
     try:
-        username = profile.pop('username')
+        username = new_profile.pop('username')
         profile, created = Profile.objects.get_or_create(
-            username=username, defaults=profile)
+            username=username, defaults=new_profile)
         if not created:
-            profile.name = profile.get('name', profile.name)
-            profile.email = profile.get('email', profile.email)
-            profile.access_token = profile.get('access_token',
+            profile.name = new_profile.get('name', profile.name)
+            profile.email = new_profile.get('email', profile.email)
+            profile.access_token = new_profile.get('access_token',
                                               profile.access_token)
             profile.save()
 
