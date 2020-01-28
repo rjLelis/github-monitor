@@ -9,7 +9,8 @@ class RepositoryForm extends React.Component {
         this.state = {
             repository: "",
             message: "",
-            messageType: ""
+            messageType: "",
+            loading: false
         }
     }
 
@@ -19,6 +20,7 @@ class RepositoryForm extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
+        this.setState({ loading: true })
         const { repository } = this.state;
         if(repository.trim() === '') {
             return this.setState(() => {
@@ -35,13 +37,15 @@ class RepositoryForm extends React.Component {
             this.setState({
                 repository: "",
                 message: message,
-                messageType:'success'
+                messageType:'success',
+                loading: false
             });
             this.props.onSubmit()
         }).catch(error => {
             return this.setState({
                 message: error.response.data,
-                messageType: 'danger'
+                messageType: 'danger',
+                loading: false
             });
         })
     }
@@ -51,7 +55,7 @@ class RepositoryForm extends React.Component {
     }
 
     render() {
-        const { repository, message, messageType } = this.state;
+        const { repository, message, messageType, loading } = this.state;
         return (
             <form className="form-inline">
                 <FlashMessage
@@ -66,12 +70,14 @@ class RepositoryForm extends React.Component {
                     name="repository"
                     onChange={(e) => this.handleChange(e)}
                     value={repository}
+                    disabled={loading}
                 />
 
                 <button
                     className="btn btn-primary my-2 my-sm-0"
                     type="submit"
-                    onClick={(e) => this.handleSubmit(e)}>
+                    onClick={(e) => this.handleSubmit(e)}
+                    disabled={loading}>
                         Add
                 </button>
             </form>
