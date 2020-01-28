@@ -55,7 +55,7 @@ def commits_by_repository(request, repo_name):
 
 @csrf_exempt
 def push_event(request):
-    for key, value in request.data:
+    for key, value in request.POST:
         print(f'{key} => {value}')
     # commits_pushed = request.data.pop('commits')
     # commits = []
