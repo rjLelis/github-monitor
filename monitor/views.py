@@ -71,7 +71,7 @@ def push_event(request):
             sha=commit.get('id'),
             commiter=profile,
             commited_at=commit.get('timestamp'),
-            message=commmit.get('message'),
+            message=commit.get('message'),
             repository=repository
         )
         commits.append(new_commit)
