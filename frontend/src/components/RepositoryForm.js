@@ -20,7 +20,6 @@ class RepositoryForm extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.setState({ loading: true })
         const { repository } = this.state;
         if(repository.trim() === '') {
             return this.setState(() => {
@@ -30,6 +29,7 @@ class RepositoryForm extends React.Component {
                 }
             });
         }
+        this.setState({ loading: true });
         axios.post('/api/repositories', {
             repository
         }).then(response => {
@@ -78,7 +78,9 @@ class RepositoryForm extends React.Component {
                     type="submit"
                     onClick={(e) => this.handleSubmit(e)}
                     disabled={loading}>
-                        Add
+
+                    {loading && <i className="fa fa-refresh fa-spin"/>}
+                    {!loading && <span>Add</span>}
                 </button>
             </form>
         )
