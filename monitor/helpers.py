@@ -74,7 +74,7 @@ def create_repository(profile, full_name_or_id):
 
 def create_commits(*commits):
     try:
-        Commit.objects.bulk_create(commits)
+        Commit.objects.bulk_create(*commits)
     except db_utils.IntegrityError as e:
         raise Exception('commit already on the list',
                         status.HTTP_400_BAD_REQUEST)
