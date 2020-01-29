@@ -2,18 +2,16 @@ from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
 
 from auth_access import helpers as auth_helpers
 
 from . import helpers as monitor_helpers
-from .models import Repository
+from .models import Commit, Repository
 from .serializers import CommitSerializer, RepositorySerializer
 
 
 class RepositoryListCreateView(generics.ListCreateAPIView):
-    queryset = Repository.objects.all().order_by('-created_at')
+    queryset = Repository.objects.all()
     serializer_class = RepositorySerializer
     authentication_classes = (auth_helpers.GithubAuthentication, )
 
@@ -54,17 +52,30 @@ def commits_by_repository(request, repo_name):
     serializer = CommitSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
+
 @api_view(['POST'])
 def push_event(request):
-    for key, value in request.data.items():
-        print(f'{key} => {value}')
-    # commits_pushed = request.data.pop('commits')
-    # commits = []
-    # for commit in commits_pushed:
-    #     sha = commit.get('sha')
-    #     message = commit.get('message')
-    #     author_name = commit.get('')
-    #     commiter = Profile()
-    #     commit_object = Commit()
-    return HttpResponse('return')
+    repository_info = request.data.pop('repository')
+    commits_pushed = request.data.pop('commits')
+    sender = request.data.pop('sender')
 
+    repo_full_name = repository_info.get('full_name')
+    repository = monitor_helpers.get_repository_by_full_name(repo_full_name)
+
+    sender_username = sender.get('login')
+    profile = monitor_helpers.create_profile(username=sender_username)
+
+    commits = []
+    for commit in commits_pushed:
+        new_commit = Commit(
+            sha=commit.get('id'),
+            commiter=profile,
+            commited_at=commit.get('timestamp'),
+            message=commmit.get('message'),
+            repository=repository
+        )
+        commits.append(new_commit)
+
+    monitor_helpers.create_commits(commits)
+
+    return Response(status=status.HTTP_201_CREATED)
