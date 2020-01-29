@@ -33,8 +33,17 @@ def get_profile(**login_or_token):
 
 
 def get_repositories_by_user(username):
-    repos = Repository.objects.filter(owner__username=username).all()
+    repos = Repository.objects.filter(
+        owner__username=username).all().order_by('-created_at')
     return repos
+
+
+def get_repository_by_full_name(full_name):
+    try:
+        repo = Repository.objects.get(full_name=full_name)
+        return repo
+    except Repository.DoesNotExist:
+        raise Exception('repo not found', status.HTTP_404_NOT_FOUND)
 
 
 def create_repository(profile, full_name_or_id):
@@ -59,7 +68,8 @@ def create_repository(profile, full_name_or_id):
     except UnknownObjectException:
         raise Exception('repo not found', status.HTTP_404_NOT_FOUND)
     except Exception as e:
-        raise e.args
+        message, status_code = e.args
+        raise Exception(message, status_code)
 
 
 def create_commits_by_repo(github_repo, repo_object):
