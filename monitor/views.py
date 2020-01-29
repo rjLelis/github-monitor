@@ -54,9 +54,9 @@ def commits_by_repository(request, repo_name):
     serializer = CommitSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
 
-@csrf_exempt
+@api_view(['POST'])
 def push_event(request):
-    for key, value in request.POST:
+    for key, value in request.data:
         print(f'{key} => {value}')
     # commits_pushed = request.data.pop('commits')
     # commits = []
