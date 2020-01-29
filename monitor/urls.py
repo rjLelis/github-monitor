@@ -8,5 +8,5 @@ urlpatterns = [
          name='repositories-list-create'),
     path('repositories/<str:repo_name>/commits',
          views.commits_by_repository, name='commits-by-repository'),
-     path('push_event', views.push_event, name='push-event')
+    path('push_event', views.push_event, name='push-event')
 ]

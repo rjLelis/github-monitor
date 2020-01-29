@@ -16,7 +16,7 @@ def create_profile(**new_profile):
             profile.name = new_profile.get('name', profile.name)
             profile.email = new_profile.get('email', profile.email)
             profile.access_token = new_profile.get('access_token',
-                                              profile.access_token)
+                                                   profile.access_token)
             profile.save()
 
         return profile, created
@@ -74,10 +74,10 @@ def create_repository(profile, full_name_or_id):
 
 def create_commits(*commits):
     try:
-        Commits.objects.bulk_create(commits)
+        Commit.objects.bulk_create(commits)
     except db_utils.IntegrityError as e:
         raise Exception('commit already on the list',
-            status.HTTP_400_BAD_REQUEST)
+                        status.HTTP_400_BAD_REQUEST)
 
 
 def create_commits_by_repo(github_repo, repo_object):

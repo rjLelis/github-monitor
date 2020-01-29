@@ -42,7 +42,6 @@ class RepositorySerializer(serializers.ModelSerializer):
 
 
 class CommitSerializer(serializers.ModelSerializer):
-
     author_username = serializers.CharField(
         source='commiter.username',
         read_only=True
@@ -57,6 +56,7 @@ class CommitSerializer(serializers.ModelSerializer):
         source='commited_at',
         read_only=True
     )
+
     class Meta:
         model = Commit
         fields = (
