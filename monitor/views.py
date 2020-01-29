@@ -59,23 +59,28 @@ def push_event(request):
     commits_pushed = request.data.pop('commits')
     sender = request.data.pop('sender')
 
-    repo_full_name = repository_info.get('full_name')
-    repository = monitor_helpers.get_repository_by_full_name(repo_full_name)
+    try:
+        repo_full_name = repository_info.get('full_name')
+        repository = monitor_helpers.get_repository_by_full_name(
+            repo_full_name)
 
-    sender_username = sender.get('login')
-    profile = monitor_helpers.create_profile(username=sender_username)
+        sender_username = sender.get('login')
+        profile, _ = monitor_helpers.create_profile(username=sender_username)
 
-    commits = []
-    for commit in commits_pushed:
-        new_commit = Commit(
-            sha=commit.get('id'),
-            commiter=profile,
-            commited_at=commit.get('timestamp'),
-            message=commit.get('message'),
-            repository=repository
-        )
-        commits.append(new_commit)
+        commits = []
+        for commit in commits_pushed:
+            new_commit = Commit(
+                sha=commit.get('id'),
+                commiter=profile,
+                commited_at=commit.get('timestamp'),
+                message=commit.get('message'),
+                repository=repository
+            )
+            commits.append(new_commit)
 
-    monitor_helpers.create_commits(commits)
+        monitor_helpers.create_commits(commits)
 
-    return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED)
+    except Exception as e:
+        message, status_code = e.args
+        return Response(message, status=status_code)

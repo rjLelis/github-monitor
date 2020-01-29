@@ -72,6 +72,14 @@ def create_repository(profile, full_name_or_id):
         raise Exception(message, status_code)
 
 
+def create_commits(*commits):
+    try:
+        Commits.objects.bulk_create(commits)
+    except db_utils.IntegrityError as e:
+        raise Exception('commit already on the list',
+            status.HTTP_400_BAD_REQUEST)
+
+
 def create_commits_by_repo(github_repo, repo_object):
     # Todo: add query to get commits only from the last month
     try:
@@ -94,7 +102,7 @@ def create_commits_by_repo(github_repo, repo_object):
 
             commit_list.append(new_commit)
 
-        Commit.objects.bulk_create(commit_list)
+        create_commits(commit_list)
     except db_utils.IntegrityError:
         raise Exception('commit already on the list',
                         status.HTTP_400_BAD_REQUEST)
@@ -121,11 +129,3 @@ def create_hook(repo):
         return hook.id
     except GithubException as e:
         return None
-
-
-def create_commits(*commits):
-    try:
-        Commits.objects.bulk_create(commits)
-    except db_utils.IntegrityError as e:
-        raise Exception('commit already on the list',
-            status.HTTP_400_BAD_REQUEST)
