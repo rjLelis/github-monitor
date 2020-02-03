@@ -1,6 +1,5 @@
 from rest_framework import generics, status
 from rest_framework.decorators import api_view
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from auth_access import helpers as auth_helpers
@@ -46,7 +45,7 @@ def commits_by_repository(request, repo_name):
     repo_full_name = f'{username}/{repo_name}'
     commits = monitor_helpers.get_commits_by_repo(repo_full_name)
 
-    paginator = PageNumberPagination()
+    paginator = monitor_helpers.MonitorPagination()
     paginator.page_size = 5
     result_page = paginator.paginate_queryset(commits, request)
     serializer = CommitSerializer(result_page, many=True)

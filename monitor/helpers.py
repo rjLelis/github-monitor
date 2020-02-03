@@ -3,6 +3,9 @@ from django.urls import reverse
 from github import Github
 from github.GithubException import GithubException, UnknownObjectException
 from rest_framework import status
+from rest_framework.response import Response
+from collections import OrderedDict
+from rest_framework.pagination import PageNumberPagination
 
 from .models import Commit, Profile, Repository
 
@@ -129,3 +132,16 @@ def create_hook(repo):
         return hook.id
     except GithubException as e:
         return None
+
+
+class MonitorPagination(PageNumberPagination):
+
+    def get_paginated_response(self, data):
+        return Response(OrderedDict([
+            ('total', self.page.paginator.count),
+            ('total_pages', self.page.paginator.num_pages),
+            ('current_page', self.page.number),
+            ('next', self.get_next_link()),
+            ('previous', self.get_previous_link()),
+            ('results', data)
+        ]))

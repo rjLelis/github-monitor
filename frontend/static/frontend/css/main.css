@@ -13,6 +13,16 @@
     border-bottom: 3px solid rgba(0,0,0,0.125);
 }
 
+.paginator {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.paginator > a {
+    margin: 5px;
+}
+
 .flex-end {
 	justify-content: flex-end;
 }
