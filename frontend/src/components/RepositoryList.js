@@ -29,7 +29,7 @@ class RepositoryList extends React.Component {
     render() {
         const { repositories } = this.props;
         return (
-            repositories.length > 0 ? (
+            repositories ? (
                 <div className="list-group">
                     {repositories.map(repo => (
                         <a

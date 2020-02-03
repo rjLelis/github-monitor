@@ -23,7 +23,7 @@ class CommitList extends React.Component {
     render(){
         const { commits } = this.props;
         return (
-            commits.length > 0 ? (
+            commits ? (
                 <div className="card">
                     {commits.map(commit => (
                         <div className="card-body commit bg-primary" key={commit.sha}>
