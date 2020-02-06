@@ -9,7 +9,9 @@ class HelpersTestCase(TestCase):
             'login': 'username',
             'scope': ['write:repo', 'repo']
         }
-        auth_url = helpers.get_authorization_url(**params)
+        auth_url = helpers.generate_url(
+                'https://github.com/login/oauth/authorize',
+                **params)
         self.assertEqual(auth_url,
             'https://github.com/login/oauth/authorize?client_id=12345678910&login=username&scope=write:repo,repo&')
 

@@ -1,7 +1,17 @@
 from django.shortcuts import redirect
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+
 from monitor import helpers as monitor_helpers
+
+
+def generate_url(base_url, **params):
+    new_url = f'{base_url}?'
+    for key, value in params.items():
+        if isinstance(value, list):
+            value = ','.join(value)
+        new_url += f'{key}={value}&'
+    return new_url
 
 
 def execute_login(request, username):

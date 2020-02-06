@@ -1,10 +1,12 @@
 import requests
 from decouple import config
-from django.shortcuts import redirect, render
 from django.contrib import messages
-from monitor import helpers as monitor_helpers
-from . import helpers as auth_helpers
+from django.shortcuts import redirect, render
 from github import Github
+
+from monitor import helpers as monitor_helpers
+
+from . import helpers as auth_helpers
 
 
 @auth_helpers.logout_required
@@ -55,25 +57,20 @@ def get_token(request):
 
 @auth_helpers.logout_required
 def redirect_access(request):
-    username = request.POST.get('username')
+    username = request.POST.get('username', None)
 
     if not username:
-        messages.error(request, 'Enter your Github username', extra_tags='danger')
+        messages.error(request, 'Enter your Github username',
+                        extra_tags='danger')
         return redirect('auth:index')
 
-    client_id = config('CLIENT_ID')
-
-    client_id = f'client_id={client_id}'
-    login = f'login={username}'
-    scopes = 'scope=write:repo_hook,repo'
-    params = [
-        client_id,
-        login,
-        scopes
-    ]
-
-    auth_url = f'https://github.com/login/oauth/authorize?'
-    for param in params:
-        auth_url += f'&{param}'
+    params = {
+        'client_id': config('CLIENT_ID'),
+        'login': username,
+        'scope': ['write:repo', 'repo']
+    }
+    auth_url = auth_helpers.generate_url(
+        'https://github.com/login/oauth/authorize',
+        **params)
 
     return redirect(auth_url)
