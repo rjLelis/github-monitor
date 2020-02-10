@@ -9,14 +9,6 @@ from auth_access import views
 
 class ViewsTestCase(TestCase):
 
-    def get_session(self):
-        if self.client.session:
-            session = self.client.session
-        else:
-            engine = import_module(django_settings.SESSION_ENGINE)
-            session = engine.SessionStore()
-        return session
-
     def test_index(self):
         response = self.client.get(reverse('auth:index'))
 
@@ -31,5 +23,8 @@ class ViewsTestCase(TestCase):
             ('username', 'some_user'),
             response.client.session.items())
 
-    def test_get_token(self):
-        pass
+    def test_redirect(self):
+        response = self.client.post(reverse('auth:redirect'),
+            {'username': 'some_user'})
+
+        self.assertIn('github', response.url)
