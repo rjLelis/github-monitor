@@ -70,7 +70,6 @@ def redirect_access(request):
         'scope': ['write:repo', 'repo']
     }
     auth_url = auth_helpers.generate_url(
-        'https://github.com/login/oauth/authorize',
-        **params)
+        'https://github.com/login/oauth/authorize', **params)
 
     return redirect(auth_url)

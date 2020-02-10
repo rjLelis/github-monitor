@@ -15,6 +15,9 @@ def generate_url(base_url, **params):
 
 
 def execute_login(request, username):
+    username = username.strip()
+    if username == '':
+        return redirect('auth:index')
     request.session['username'] = username
 
 
