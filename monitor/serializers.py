@@ -26,7 +26,7 @@ class RepositorySerializer(serializers.ModelSerializer):
         username = self.context.get('username')
         repository_name = validated_data.pop('repository')
         try:
-            profile, _ = monitor_helpers.get_profile(username=username)
+            profile = monitor_helpers.get_profile(username=username)
             new_repository = monitor_helpers.create_repository(
                 profile,
                 f'{username}/{repository_name}'

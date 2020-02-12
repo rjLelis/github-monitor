@@ -53,7 +53,7 @@ class GithubAuthentication(BaseAuthentication):
 
         username = request.session.get('username')
         try:
-            profile, _ = monitor_helpers.get_profile(username=username)
+            profile = monitor_helpers.get_profile(username=username)
             return profile, None
         except Exception:
             raise AuthenticationFailed('user not logged in')

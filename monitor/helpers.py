@@ -22,15 +22,15 @@ def create_profile(**new_profile):
                                                    profile.access_token)
             profile.save()
 
-        return profile, created
+        return profile
     except db_utils.IntegrityError:
         raise (f'username can\'t be null', status.HTTP_400_BAD_REQUEST)
 
 
-def get_profile(**login_or_token):
+def get_profile(**username_or_access_token):
     try:
-        profile = Profile.objects.get(**login_or_token)
-        return profile, status.HTTP_200_OK
+        profile = Profile.objects.get(**username_or_access_token)
+        return profile
     except Profile.DoesNotExist:
         raise Exception('User not found', status.HTTP_404_NOT_FOUND)
 
@@ -89,7 +89,7 @@ def create_commits_by_repo(github_repo, repo_object):
         commits = github_repo.get_commits()
         commit_list = []
         for commit in commits:
-            profile, _ = create_profile(
+            profile = create_profile(
                 name=commit.author.name,
                 username=commit.author.login,
                 email=commit.author.email

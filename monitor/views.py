@@ -64,7 +64,7 @@ def push_event(request):
             repo_full_name)
 
         sender_username = sender.get('login')
-        profile, _ = monitor_helpers.create_profile(username=sender_username)
+        profile = monitor_helpers.create_profile(username=sender_username)
 
         commits = []
         for commit in commits_pushed:

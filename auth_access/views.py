@@ -43,7 +43,7 @@ def get_token(request):
     g = Github(access_token)
     user = g.get_user()
 
-    profile, _ = monitor_helpers.create_profile(
+    profile = monitor_helpers.create_profile(
         username=user.login,
         name=user.name,
         email=user.email,
