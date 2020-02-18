@@ -1,6 +1,7 @@
 from django.test import TestCase
 from monitor import helpers
-from monitor.models import Profile, Repository
+from monitor.models import Profile, Repository, Commit
+from datetime import datetime
 
 class HelpersTestCase(TestCase):
 
@@ -8,14 +9,24 @@ class HelpersTestCase(TestCase):
         profile = Profile.objects.create(
             username='rjLelis',
             name='some user',
-            email='someUser@test.com',
-            access_token='718fab2a729bdee9d001fdb923277a0b39ae9e60'
+            email='someUser@test.com'
         )
 
         for i in range(5):
             Repository.objects.create(
                 name=f'repo{i}',
                 owner=profile
+            )
+
+        repo = Repository.objects.get(name='repo2')
+
+        for i in range(5):
+            commit = Commit.objects.create(
+                sha=f'sha{i}2',
+                commiter=profile,
+                message=f'commit number{i}',
+                commited_at=datetime.now(),
+                repository=repo
             )
 
     def test_create_profile(self):
@@ -49,7 +60,6 @@ class HelpersTestCase(TestCase):
 
         self.assertEquals(len(repositories), 5)
 
-
     def test_empty_repository_list(self):
         repositories = helpers.get_repositories_by_user('user')
 
@@ -60,12 +70,24 @@ class HelpersTestCase(TestCase):
 
         self.assertIsNotNone(repo)
 
-    def test_create_repository(self):
-        # Obs: tested with real Github user and repo
+    def test_create_commits(self):
         profile = helpers.get_profile(username='rjLelis')
-        repo = helpers.create_repository(profile, 'rjLelis/todo-app')
+        repo = helpers.get_repository_by_full_name('rjLelis/repo1')
+        commits = []
+        for i in range(5):
+            commit = Commit(
+                sha=f'sha{i}',
+                commiter=profile,
+                message=f'commit number{i}',
+                commited_at=datetime.now(),
+                repository=repo,
+            )
+            commits.append(commit)
+        helpers.create_commits(commits)
 
-        self.assertEquals(
-            repo.description,
-            'A todo app made with Django rest framework and Reactjs'
-        )
+        self.assertEquals(len(repo.commits.all()), 5)
+
+    def test_get_commits_by_repo(self):
+        commits = helpers.get_commits_by_repo('rjLelis/repo2')
+
+        self.assertEquals(len(commits), 5)

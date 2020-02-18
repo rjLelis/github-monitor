@@ -1,11 +1,12 @@
+from collections import OrderedDict
+
 from django.db import utils as db_utils
 from django.urls import reverse
 from github import Github
 from github.GithubException import GithubException, UnknownObjectException
 from rest_framework import status
-from rest_framework.response import Response
-from collections import OrderedDict
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
 
 from .models import Commit, Profile, Repository
 
@@ -24,7 +25,9 @@ def create_profile(**new_profile):
 
         return profile
     except db_utils.IntegrityError:
-        raise (f'username can\'t be null', status.HTTP_400_BAD_REQUEST)
+        raise Exception(
+                f'username or email can\'t be null',
+                status.HTTP_400_BAD_REQUEST)
 
 
 def get_profile(**username_or_access_token):
@@ -52,16 +55,16 @@ def get_repository_by_full_name(full_name):
 def create_repository(profile, full_name_or_id):
     try:
         g = Github(profile.access_token)
-        repo = g.get_repo(full_name_or_id=full_name_or_id)
-        hook_id = create_hook(repo)
+        github_repo = g.get_repo(full_name_or_id=full_name_or_id)
+        hook_id = create_hook(github_repo)
         new_repository = Repository.objects.create(
-            name=repo.name,
-            description=repo.description,
+            name=github_repo.name,
+            description=github_repo.description,
             owner=profile,
             hook_id=hook_id
         )
 
-        create_commits_by_repo(repo, new_repository)
+        create_commits_by_repo(github_repo, new_repository)
 
         return new_repository
 
@@ -70,9 +73,6 @@ def create_repository(profile, full_name_or_id):
                         status.HTTP_400_BAD_REQUEST)
     except UnknownObjectException:
         raise Exception('repo not found', status.HTTP_404_NOT_FOUND)
-    except Exception as e:
-        message, status_code = e.args
-        raise Exception(message, status_code)
 
 
 def create_commits(*commits):
@@ -92,7 +92,7 @@ def create_commits_by_repo(github_repo, repo_object):
             profile = create_profile(
                 name=commit.author.name,
                 username=commit.author.login,
-                email=commit.author.email
+                email=commit.commit.author.email
             )
 
             new_commit = Commit(
