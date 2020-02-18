@@ -46,10 +46,8 @@ def commits_by_repository(request, repo_name):
     commits = monitor_helpers.get_commits_by_repo(repo_full_name)
 
     paginator = monitor_helpers.MonitorPagination()
-    paginator.page_size = 5
-    result_page = paginator.paginate_queryset(commits, request)
-    serializer = CommitSerializer(result_page, many=True)
-    return paginator.get_paginated_response(serializer.data)
+    return paginator.paginate_function_based_view(
+                commits, request, CommitSerializer)
 
 
 @api_view(['POST'])

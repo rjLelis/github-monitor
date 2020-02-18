@@ -145,3 +145,11 @@ class MonitorPagination(PageNumberPagination):
             ('previous', self.get_previous_link()),
             ('results', data)
         ]))
+
+    def paginate_function_based_view(self,
+        queryset, request, serializer_class, page_size=5):
+
+        self.page_size = page_size
+        result_page = self.paginate_queryset(queryset, request)
+        serializer = serializer_class(result_page, many=True)
+        return self.get_paginated_response(serializer.data)
