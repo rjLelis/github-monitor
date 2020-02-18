@@ -38,6 +38,18 @@
     text-decoration: none;
 }
 
+.no-link-author {
+    text-decoration: none;
+    color: #00bc8c;
+    background-color: transparent;
+}
+
+.no-link-author:hover {
+    color: #00bc8c;
+    text-decoration: none;
+    cursor: default;
+}
+
 .row .col-md-12 {
     margin-bottom: 25px;
     text-align: center;

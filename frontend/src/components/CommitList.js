@@ -28,7 +28,12 @@ class CommitList extends React.Component {
                     {commits.map(commit => (
                         <div className="card-body commit bg-primary" key={commit.sha}>
                             <h4 className="card-title">commit {commit.sha}</h4>
-                            <a href={`mailto:${commit.author_email}`} className="email-link">{commit.author_username} &lt;{commit.author_email}&gt;</a>
+                            {commit.author_email &&
+                                <a href={`mailto:${commit.author_email}`} className="email-link">{commit.author_username} &lt;{commit.author_email}&gt;</a>
+                            }
+                            {!commit.author_email &&
+                                <a href='#' className="no-link-author">{commit.author_username}</a>
+                            }
                             <p className="card-text">{commit.message}</p>
                             <p className="card-text">{this.getDateTimeFormat(commit.date)}</p>
                         </div>
