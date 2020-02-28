@@ -1,9 +1,14 @@
+# python
+
 venv/
 .idea/
 .vscode/
 __pycache__/
 .env
 *.sqlite3
+*.rdb
+
+# js
 node_modules
 staticfiles
 frontend/static/frontend/js/*
