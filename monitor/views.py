@@ -6,7 +6,7 @@ from django.http.response import HttpResponse
 from auth_access import helpers as auth_helpers
 
 from . import helpers as monitor_helpers
-from . import tasks as monitor_task
+from .tasks import insert_pushed_commits
 from .models import Commit, Repository
 from .serializers import CommitSerializer, RepositorySerializer
 
@@ -58,7 +58,7 @@ def push_event(request):
     commits_pushed = request.data.pop('commits')
     sender = request.data.pop('sender')
 
-    monitor_task.insert_pushed_commits.delay(
+    insert_pushed_commits.delay(
         repository_info, commits_pushed, sender
     )
 
