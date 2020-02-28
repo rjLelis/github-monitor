@@ -58,7 +58,7 @@ def push_event(request):
     commits_pushed = request.data.pop('commits')
     sender = request.data.pop('sender')
 
-    monitor_task.insert_pushed_commits(
+    monitor_task.insert_pushed_commits.delay(
         repository_info, commits_pushed, sender
     )
 

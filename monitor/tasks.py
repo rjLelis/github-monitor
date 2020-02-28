@@ -26,6 +26,7 @@ def insert_pushed_commits(repository, commits, sender):
             commits.append(new_commit)
 
         monitor_helpers.create_commits(commits)
-
-    except Exception:
+        print('Created')
+    except Exception as e:
+        print('Error ', e)
         return None
