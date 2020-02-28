@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from . import helpers as monitor_helpers
-from .models import Commit, Profile, Repository
+from .models import Commit, Repository
 
 
 class RepositorySerializer(serializers.ModelSerializer):

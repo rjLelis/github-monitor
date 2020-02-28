@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from auth_access import helpers as auth_helpers
 
 from . import helpers as monitor_helpers
+from . import tasks as monitor_task
 from .models import Commit, Repository
 from .serializers import CommitSerializer, RepositorySerializer
 
@@ -56,28 +57,6 @@ def push_event(request):
     commits_pushed = request.data.pop('commits')
     sender = request.data.pop('sender')
 
-    try:
-        repo_full_name = repository_info.get('full_name')
-        repository = monitor_helpers.get_repository_by_full_name(
-            repo_full_name)
-
-        sender_username = sender.get('login')
-        profile = monitor_helpers.create_profile(username=sender_username)
-
-        commits = []
-        for commit in commits_pushed:
-            new_commit = Commit(
-                sha=commit.get('id'),
-                commiter=profile,
-                commited_at=commit.get('timestamp'),
-                message=commit.get('message'),
-                repository=repository
-            )
-            commits.append(new_commit)
-
-        monitor_helpers.create_commits(commits)
-
-        return Response(status=status.HTTP_201_CREATED)
-    except Exception as e:
-        message, status_code = e.args
-        return Response(message, status=status_code)
+    monitor_task.insert_pushed_commits(
+        repository_info, commits_pushed, sender
+    )
